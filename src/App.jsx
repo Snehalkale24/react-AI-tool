@@ -1,6 +1,13 @@
 import './App.css'
+import { useState } from 'react'
 
 function App() {
+  const [question,setquestion]=useState('')
+
+  const askQuestion = () => {
+  console.log(question);
+}
+
   return (
     <div className='grid grid-cols-5 h-screen text-center'>
       
@@ -13,8 +20,8 @@ function App() {
         </div>
 
         <div className='bg-zinc-800 w-1/2 text-white m-auto rounded-2xl border-zinc-300 border p-1 flex'>
-          <input type="text" className="w-full h-full p-3 outline-none"    placeholder='Ask me Anything' />
-          <button>Ask</button>
+          <input type="text" value={question} onChange={(event)=>setquestion(event.target.value)} className="w-full h-full p-3 outline-none"    placeholder='Ask me Anything' />
+          <button onClick={askQuestion}>Ask</button>
         </div>
       </div>
 
