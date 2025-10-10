@@ -5,18 +5,25 @@ function App() {
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
   const [loading, setLoading] = useState(false)
+  const [recentSearches, setRecentSearches] = useState([]) 
 
-  const askQuestion = async () => {
-    if (!question.trim()) {
+  const askQuestion = async (q = question) => {
+    const query = q.trim()
+    if (!query) {
       setAnswer("⚠️ Please enter a question.")
       return
     }
+
+    setRecentSearches(prev => {
+      const newList = [query, ...prev.filter(item => item !== query)]
+      return newList.slice(0, 5) 
+    })
 
     const payload = {
       contents: [
         {
           parts: [
-            { text: question }
+            { text: query }
           ]
         }
       ]
@@ -64,14 +71,26 @@ function App() {
   return (
     <div className='grid grid-cols-5 h-screen text-center bg-zinc-900 text-white'>
       
-      {/* Sidebar */}
-      <div className='bg-zinc-800 p-2'>hee</div>
+      <div className='bg-zinc-800 p-4 flex flex-col items-start'>
+        <h3 className='font-bold mb-2'>Recent Searches</h3>
+        <ul className='space-y-2 w-full'>
+          {recentSearches.map((item, index) => (
+            <li 
+              key={index} 
+              className='cursor-pointer hover:text-blue-400'
+              onClick={() => askQuestion(item)}
+            >
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
       
-      
-      {/* Main Content */}
       <div className='col-span-4 flex flex-col items-center justify-start p-6'>
+        <div className='font-bold text-pink-400 text-4xl p-4'>Hello User,Ask me Anything</div>
+    
         
-        {/* 👉 Answer दिसेल (वरती) */}
+  
         {answer && (
           <div className="bg-zinc-800 text-white w-full max-w-2xl p-4 mb-6 rounded-xl shadow text-left">
             <h2 className="font-bold text-lg mb-2">Answer:</h2>
@@ -79,7 +98,7 @@ function App() {
           </div>
         )}
 
-        
+       
         <div className='bg-zinc-800 w-full max-w-2xl rounded-2xl border border-zinc-600 p-1 flex'>
           <input 
             type="text" 
@@ -89,7 +108,7 @@ function App() {
             placeholder='Ask me Anything' 
           />
           <button 
-            onClick={askQuestion} 
+            onClick={() => askQuestion()} 
             disabled={loading}
             className="px-4 py-2 bg-blue-500 rounded-lg ml-2 disabled:opacity-50"
           >
@@ -97,8 +116,6 @@ function App() {
           </button>
         </div>
       </div>
-
-      
     </div>
   )
 }
